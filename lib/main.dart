@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
-// import
 import 'package:firebase_core/firebase_core.dart';
-// Import file cấu hình do FlutterFire tạo ra
+import 'package:ntmotel/providers/auth_provider.dart';
+import 'package:ntmotel/screens/auth_wrapper.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
-
 void main() async {
-  // Đảm bảo Flutter đã sẵn sàng
   WidgetsFlutterBinding.ensureInitialized();
-  // Khởi tạo Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -21,12 +18,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Ntmotel',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    // Sử dụng MultiProvider nếu sau này có thêm nhiều provider khác
+    return ChangeNotifierProvider(
+      create: (context) => AuthProvider(),
+      child: MaterialApp(
+        title: 'NTMotel',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        // Trang chủ của ứng dụng bây giờ là AuthWrapper
+        home: const AuthWrapper(),
       ),
-      home: const HomeScreen(),
     );
   }
 }

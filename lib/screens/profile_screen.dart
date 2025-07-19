@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:ntmotel/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Bước 1: Lấy thông tin từ AuthProvider
+    final authProvider = Provider.of<AuthProvider>(context);
+    final user = authProvider.userModel;
+
+    // Nếu dữ liệu người dùng chưa tải xong, hiển thị vòng quay
+    if (user == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    // Giao diện gốc của bạn, đã được cập nhật
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5), // màu nền sáng
       body: ListView(
@@ -16,19 +30,26 @@ class ProfileScreen extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const CircleAvatar(
+                // Bước 2: Cập nhật Avatar
+                CircleAvatar(
                   radius: 30,
-                  backgroundImage: AssetImage(''), // Hoặc NetworkImage
+                  backgroundImage: user.avatarUrl != null && user.avatarUrl!.isNotEmpty
+                      ? NetworkImage(user.avatarUrl!)
+                      : null,
+                  child: user.avatarUrl == null || user.avatarUrl!.isEmpty
+                      ? const Icon(Icons.person, size: 30, color: Colors.white)
+                      : null,
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text("Chào ...",
-                          style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
-                      SizedBox(height: 4),
-
+                    children: [
+                      const SizedBox(height: 4),
+                      // Bước 3: Cập nhật lời chào
+                      Text("Chào, ${user.displayName ?? 'Người dùng'}!",
+                          style: const TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 4),
                     ],
                   ),
                 ),
@@ -49,24 +70,45 @@ class ProfileScreen extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          // Section: Trợ giúp
-          _sectionTitle("Trợ giúp"),
-          _tile(icon: Icons.support_agent, title: "Liên hệ dịch vụ khách hàng"),
-          _tile(icon: Icons.security, title: "Trung tâm thông tin về bảo mật"),
-          _tile(icon: Icons.handshake_outlined, title: "Giải quyết khiếu nại"),
+          // Section: Tài khoản và Ưu đãi
+          _sectionTitle("Tài khoản và Ưu đãi"),
+          // Bước 4: Thêm dòng ưu đãi
+          _tile(icon: Icons.card_giftcard_outlined, title: "Ưu đãi của bạn"),
+          _tile(icon: Icons.security, title: "Bảo mật & Quyền riêng tư"),
 
-          const SizedBox(height: 16),
-
-          // Section: Pháp lý và quyền riêng tư
-          _sectionTitle("Pháp lý và quyền riêng tư"),
-          _tile(icon: Icons.privacy_tip_outlined, title: "Quản lý quyền riêng tư và dữ liệu"),
-          _tile(icon: Icons.menu_book_outlined, title: "Hướng dẫn nội dung"),
-
-          const SizedBox(height: 16),
-
-          // Section: Khám phá
-          _sectionTitle("Khám phá"),
-          _tile(icon: Icons.percent, title: "Ưu đãi"),
+          // Bước 5: Thêm nút đăng xuất
+          Column(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.logout, color: Colors.red),
+                title: const Text('Đăng xuất', style: TextStyle(fontSize: 15, color: Colors.red)),
+                onTap: () {
+                  // Hiển thị hộp thoại xác nhận khi nhấn đăng xuất
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text('Xác nhận'),
+                      content: const Text('Bạn có chắc chắn muốn đăng xuất không?'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('Hủy'),
+                          onPressed: () => Navigator.of(ctx).pop(),
+                        ),
+                        TextButton(
+                          child: const Text('Đăng xuất'),
+                          onPressed: () {
+                            Navigator.of(ctx).pop(); // Đóng hộp thoại
+                            authProvider.signOut(); // Thực hiện đăng xuất
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              const Divider(height: 0),
+            ],
+          ),
 
           const SizedBox(height: 30),
         ],
@@ -74,7 +116,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  // ---------- Helper Widgets ----------
+  // ---------- Helper Widgets (Giữ nguyên) ----------
   Widget _sectionTitle(String title) => Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     child: Text(title,
