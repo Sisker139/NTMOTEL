@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Danh sách các màn hình tương ứng với từng tab
   final List<Widget> _screens = [
-    const HometabScreen(),
+    const HomeTabScreen(),
     const SaveScreen(),
     const ContactScreen(),
     const PostScreen(),

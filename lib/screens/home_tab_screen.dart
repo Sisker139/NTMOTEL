@@ -1,11 +1,52 @@
-// screens/profile_screen.dart
 import 'package:flutter/material.dart';
+import 'package:ntmotel/providers/auth_provider.dart';
+import 'package:ntmotel/screens/post_screen.dart';
+import 'package:provider/provider.dart';
 
-class HometabScreen extends StatelessWidget {
-  const HometabScreen({super.key});
+class HomeTabScreen extends StatelessWidget {
+  const HomeTabScreen({super.key});
+
+  // Widget để hiển thị banner đăng tin
+  Widget _buildPostRoomBanner(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const PostScreen()),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: const Color(0xFF00A680),
+        ),
+        child: Row(
+          children: const [
+            Icon(Icons.add_home_work_outlined, color: Colors.white, size: 32),
+            SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                'Đăng nhà trọ trên\nNT Motel',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final isLandlord = authProvider.userModel?.role == 'landlord';
+
+    // Thêm Scaffold và AppBar vào đây
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlueAccent,
@@ -15,7 +56,6 @@ class HometabScreen extends StatelessWidget {
         title: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Logo ở giữa
             Center(
               child: SizedBox(
                 height: 50,
@@ -26,10 +66,8 @@ class HometabScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            // Thanh tìm kiếm + icon
             Row(
               children: [
-                // Thanh tìm kiếm (dãn ra giữa)
                 Expanded(
                   child: Container(
                     height: 40,
@@ -48,20 +86,25 @@ class HometabScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10),
-
-                // Icon chat
                 const Icon(Icons.chat_outlined, color: Colors.white),
                 const SizedBox(width: 10),
-
-                // Icon thông báo
                 const Icon(Icons.notifications_outlined, color: Colors.white),
               ],
             ),
           ],
         ),
       ),
-
-
+      body: ListView(
+        children: [
+          if (isLandlord) _buildPostRoomBanner(context),
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Center(
+              child: Text('Danh sách phòng trọ sẽ được hiển thị ở đây.'),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
