@@ -4,7 +4,9 @@ import '../models/user_model.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-
+  Future<void> updateUserAvatar(String uid, String avatarUrl) async {
+    await _db.collection('users').doc(uid).update({'avatarUrl': avatarUrl});
+  }
   // Thêm người dùng mới vào collection 'users'
   Future<void> addUser(UserModel user) async {
     // Dùng uid từ Auth làm document ID
