@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "312004216675",
+    "project_id": "ntmotel-app",
+    "storage_bucket": "ntmotel-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:312004216675:android:0bdf7224afb32096593556",
+        "android_client_info": {
+          "package_name": "com.example.ntmotel"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyw0F8AQeglEN4ZaKXLGTRkGBmWqCGIU8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
