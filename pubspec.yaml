@@ -35,7 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
-  # CÁC GÓI ĐÃ ĐƯỢC THÊM VÀO
+  # CÁC GÓI ĐÃ ĐƯỢC THÊM VÀO a
   firebase_core: ^2.32.0
   cloud_firestore: ^4.17.5
   firebase_auth: ^4.20.0
