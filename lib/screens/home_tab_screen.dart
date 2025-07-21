@@ -3,6 +3,7 @@ import 'package:ntmotel/providers/auth_provider.dart';
 import 'package:ntmotel/screens/post_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:ntmotel/screens/add_motel_page.dart';
+import 'package:ntmotel/screens/room_list_widget.dart';
 
 
 class HomeTabScreen extends StatelessWidget {
@@ -97,15 +98,10 @@ class HomeTabScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: ListView(
+      body: Column(
         children: [
           if (isLandlord) _buildPostRoomBanner(context),
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Center(
-              child: Text('Danh sách phòng trọ sẽ được hiển thị ở đây.'),
-            ),
-          ),
+          Expanded(child: RoomListWidget()),
         ],
       ),
     );
