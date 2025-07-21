@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ntmotel/providers/auth_provider.dart';
 import 'package:ntmotel/screens/post_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:ntmotel/screens/add_motel_page.dart';
+
 
 class HomeTabScreen extends StatelessWidget {
   const HomeTabScreen({super.key});
@@ -11,7 +13,7 @@ class HomeTabScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const PostScreen()),
+          MaterialPageRoute(builder: (context) => AddMotelPage()),
         );
       },
       child: Container(
@@ -40,6 +42,7 @@ class HomeTabScreen extends StatelessWidget {
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {

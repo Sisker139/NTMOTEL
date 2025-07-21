@@ -4,6 +4,7 @@ import 'package:ntmotel/providers/auth_provider.dart';
 import 'package:ntmotel/screens/auth_wrapper.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'screens/add_motel_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
