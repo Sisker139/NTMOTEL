@@ -44,6 +44,7 @@ dependencies:
   http: ^1.2.1
   image_picker: ^1.1.2
   firebase_storage: ^11.7.7
+  intl: ^0.19.0
 
   # DÒNG ĐÚNG LÀ DÒNG NÀY
   google_maps_flutter: ^2.6.1

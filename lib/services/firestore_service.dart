@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/room_model.dart';
+import 'package:ntmotel/models/motel_model.dart';
 import '../models/user_model.dart';
 
 class FirestoreService {
@@ -22,16 +22,16 @@ class FirestoreService {
     return null;
   }
 
+
   // Đăng một phòng mới
-  Future<void> addRoom(RoomModel room) async {
-    // Firestore sẽ tự tạo document ID
-    await _db.collection('rooms').add(room.toMap());
+  Future<void> addMotel(MotelModel motel) async {
+    await _db.collection('motels').add(motel.toMap());
   }
 
-  // Lấy danh sách tất cả các phòng
-  Stream<List<RoomModel>> getRooms() {
-    return _db.collection('rooms').snapshots().map((snapshot) => snapshot.docs
-        .map((doc) => RoomModel.fromMap(doc.data(), doc.id))
+  // Lấy danh sách tất cả các phòng trọ
+  Stream<List<MotelModel>> getMotels() {
+    return _db.collection('motels').snapshots().map((snapshot) => snapshot.docs
+        .map((doc) => MotelModel.fromMap(doc.data(), doc.id))
         .toList());
   }
 }

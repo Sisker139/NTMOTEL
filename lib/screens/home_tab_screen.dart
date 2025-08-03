@@ -4,7 +4,9 @@ import 'package:ntmotel/screens/post_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:ntmotel/screens/add_motel_page.dart';
 import 'package:ntmotel/screens/room_list_widget.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ntmotel/models/motel_model.dart';
+import 'package:intl/intl.dart';
 
 class HomeTabScreen extends StatelessWidget {
   const HomeTabScreen({super.key});
@@ -98,10 +100,104 @@ class HomeTabScreen extends StatelessWidget {
           ],
         ),
       ),
+
       body: Column(
         children: [
           if (isLandlord) _buildPostRoomBanner(context),
-          Expanded(child: RoomListWidget()),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection('motels').snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Lỗi: ${snapshot.error}'));
+                }
+                final docs = snapshot.data?.docs ?? [];
+                if (docs.isEmpty) {
+                  return const Center(child: Text('Chưa có phòng trọ nào!'));
+                }
+                return ListView.builder(
+                  itemCount: docs.length,
+                  itemBuilder: (context, index) {
+                    final motel = MotelModel.fromMap(
+                      docs[index].data() as Map<String, dynamic>,
+                      docs[index].id,
+                    );
+
+                    return _buildMotelCard(motel);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMotelCard(MotelModel motel) {
+    // Dòng code được thêm vào
+    final formattedPrice = NumberFormat.decimalPattern('vi_VN').format(motel.monthlyPrice);
+
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (motel.images.isNotEmpty)
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(12)),
+              child: Image.network(
+                motel.images.first,
+                height: 180,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  motel.name,
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    const Icon(Icons.attach_money, size: 20),
+                    const SizedBox(width: 4),
+                    Text(
+                      // Dòng code được thay đổi
+                      '$formattedPrice VND/tháng',
+                      style: const TextStyle(fontSize: 16,
+                          color: Colors.redAccent,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  motel.description,
+                  style: const TextStyle(fontSize: 15, color: Colors.black87),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  children: motel.amenities
+                      .map((e) => Chip(label: Text(e)))
+                      .toList(),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
