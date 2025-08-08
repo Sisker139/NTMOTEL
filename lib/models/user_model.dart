@@ -8,6 +8,8 @@ class UserModel {
   final String? avatarUrl;
   final String role;
   final Timestamp createdAt;
+  final List<String> savedMotelIds;
+  final List<String> fcmTokens;
 
   UserModel({
     required this.uid,
@@ -17,6 +19,8 @@ class UserModel {
     this.avatarUrl,
     required this.role,
     required this.createdAt,
+    required this.savedMotelIds,
+    this.fcmTokens = const [],
   });
 
   // Chuyển đổi từ Map (dữ liệu nhận từ Firestore) sang object UserModel
@@ -29,6 +33,8 @@ class UserModel {
       avatarUrl: map['avatarUrl'],
       role: map['role'] ?? 'tenant', // Mặc định là người thuê
       createdAt: map['createdAt'] ?? Timestamp.now(),
+      savedMotelIds: List<String>.from(map['savedMotelIds'] ?? []),
+      fcmTokens: List<String>.from(map['fcmTokens'] ?? []),
     );
   }
 
@@ -42,6 +48,8 @@ class UserModel {
       'avatarUrl': avatarUrl,
       'role': role,
       'createdAt': createdAt,
+      'savedMotelIds': savedMotelIds,
+      'fcmTokens': fcmTokens
     };
   }
 }

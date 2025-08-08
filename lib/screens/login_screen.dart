@@ -1,3 +1,4 @@
+// lib/screens/login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:ntmotel/providers/auth_provider.dart';
 import 'package:ntmotel/screens/register_screen.dart';
@@ -23,8 +24,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _submit() {
+    // Xóa thông báo lỗi cũ (nếu có)
+    Provider.of<AuthProvider>(context, listen: false).clearErrorMessage();
     if (_formKey.currentState!.validate()) {
-      // Gọi hàm đăng nhập từ AuthProvider
       Provider.of<AuthProvider>(context, listen: false).signIn(
         _emailController.text.trim(),
         _passwordController.text.trim(),
@@ -34,70 +36,158 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
-
     return Scaffold(
-      appBar: AppBar(title: const Text('Đăng nhập')),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Thêm logo của bạn ở đây nếu muốn
-                // Image.asset('assets/logo1.png', height: 100),
-                const SizedBox(height: 40),
-                TextFormField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) =>
-                  value!.isEmpty ? 'Vui lòng nhập email' : null,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Lớp ảnh nền
+          Image.asset(
+            'assets/anhnen.jpg', // Thay bằng đường dẫn ảnh của bạn
+            fit: BoxFit.cover,
+          ),
+          // Lớp màu mờ
+          Container(
+            color: Colors.black.withOpacity(0.3),
+          ),
+          // Lớp nội dung
+          Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Container(
+                padding: const EdgeInsets.all(32.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
                 ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _passwordController,
-                  decoration: const InputDecoration(labelText: 'Mật khẩu'),
-                  obscureText: true,
-                  validator: (value) =>
-                  value!.isEmpty ? 'Vui lòng nhập mật khẩu' : null,
-                ),
-                const SizedBox(height: 24),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'Đăng Nhập',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Nhấn đăng nhập để tiếp tục',
+                        style: TextStyle(color: Colors.grey.shade600),
+                      ),
+                      const SizedBox(height: 32),
+                      _buildTextField(
+                        controller: _emailController,
+                        hintText: 'Email',
+                        icon: Icons.email_outlined,
+                      ),
+                      const SizedBox(height: 16),
+                      _buildTextField(
+                        controller: _passwordController,
+                        hintText: 'Mật Khẩu',
+                        icon: Icons.lock_outline,
+                        isPassword: true,
+                      ),
+                      const SizedBox(height: 24),
 
-                // Hiển thị lỗi nếu có
-                if (authProvider.errorMessage != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Text(
-                      authProvider.errorMessage!,
-                      style: const TextStyle(color: Colors.red),
-                      textAlign: TextAlign.center,
-                    ),
+                      // Hiển thị lỗi từ provider
+                      Consumer<AuthProvider>(
+                        builder: (context, auth, child) {
+                          if (auth.errorMessage != null && !auth.isLoading) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10.0),
+                              child: Text(auth.errorMessage!, style: const TextStyle(color: Colors.red)),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
+
+                      // Nút đăng nhập
+                      SizedBox(
+                        width: double.infinity,
+                        child: Consumer<AuthProvider>(
+                          builder: (context, auth, child) => ElevatedButton(
+                            onPressed: auth.isLoading ? null : _submit,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF29D2F1), // Màu xanh lá cây như trong ảnh
+                              // backgroundColor: Colors.lightBlueAccent, // Hoặc màu xanh bạn yêu cầu
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                            ),
+                            child: auth.isLoading
+                                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white))
+                                : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text('ĐĂNG NHẬP', style: TextStyle(fontSize: 16)),
+                                SizedBox(width: 8),
+                                Icon(Icons.arrow_forward, size: 20),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Bạn chưa có tài khoản? '),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const RegisterScreen(),
+                              ));
+                            },
+                            child: const Text(
+                              'ĐĂNG KÝ',
+                              style: TextStyle(
+                                color: Color(0xFF29D2F1), // Màu xanh lá cây
+                                // color: Colors.lightBlueAccent, // Hoặc màu xanh bạn yêu cầu
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-
-                // Hiển thị vòng quay khi đang xử lý
-                authProvider.isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : ElevatedButton(
-                  onPressed: _submit,
-                  child: const Text('Đăng nhập'),
                 ),
-                const SizedBox(height: 16),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const RegisterScreen(),
-                    ));
-                  },
-                  child: const Text('Chưa có tài khoản? Đăng ký ngay'),
-                ),
-              ],
+              ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  // Widget helper để tạo ô nhập liệu cho đẹp và gọn
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hintText,
+    required IconData icon,
+    bool isPassword = false,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: isPassword,
+      decoration: InputDecoration(
+        hintText: hintText,
+        prefixIcon: Icon(icon, color: Colors.grey.shade500),
+        filled: true,
+        fillColor: Colors.grey.shade100,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide.none,
         ),
       ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Vui lòng không để trống.';
+        }
+        return null;
+      },
     );
   }
 }

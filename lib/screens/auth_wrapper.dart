@@ -1,3 +1,5 @@
+// lib/screens/auth_wrapper.dart
+
 import 'package:flutter/material.dart';
 import 'package:ntmotel/providers/auth_provider.dart';
 import 'package:ntmotel/screens/home_screen.dart';
@@ -11,9 +13,9 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
 
-    // Dựa vào trạng thái user từ provider để quyết định
-    if (authProvider.user != null) {
-      // Nếu đã đăng nhập, vào trang chủ
+    // SỬA: Dùng `userModel` từ AuthProvider mới để kiểm tra
+    if (authProvider.userModel != null) {
+      // Nếu đã đăng nhập và có thông tin, vào trang chủ
       return const HomeScreen();
     } else {
       // Nếu chưa, vào trang đăng nhập

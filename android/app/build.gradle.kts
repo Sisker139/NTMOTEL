@@ -1,41 +1,51 @@
 // File: android/app/build.gradle.kts
 
+// THÊM: Dòng import cần thiết cho JavaVersion
+import org.gradle.api.JavaVersion
+
 plugins {
     id("com.android.application")
-    id("com.google.gms.google-services") // 🔑 Firebase plugin
+    id("com.google.gms.google-services")
     id("kotlin-android")
-    id("dev.flutter.flutter-gradle-plugin") // Flutter plugin (phải có)
+    id("dev.flutter.flutter-gradle-plugin")
 }
 
 android {
-    namespace = "com.example.ntmotel" // 🔧 Sửa theo namespace của bạn
-    compileSdk = 35
+    namespace = "com.example.ntmotel"
+    compileSdk = 35 // Bạn có thể giữ 34 hoặc 35
     ndkVersion = "27.0.12077973"
 
     defaultConfig {
-        applicationId = "com.example.ntmotel" // 🔧 Sửa theo app ID thật
+        applicationId = "com.example.ntmotel"
         minSdk = 21
-        targetSdk = 35
+        targetSdk = 35 // Bạn có thể giữ 34 hoặc 35
         versionCode = 1
         versionName = "1.0.0"
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("debug") // Hoặc release nếu có keystore riêng
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
+    // SỬA: Cú pháp đúng cho Kotlin DSL
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = "1.8" // Nên đặt là 1.8 cho nhất quán
     }
 }
 
 flutter {
     source = "../.."
+}
+
+// THÊM: Khối dependencies với cú pháp Kotlin
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }

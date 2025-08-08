@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ntmotel/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:ntmotel/screens/edit_profile_screen.dart';
+import 'package:ntmotel/screens/change_password_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -53,8 +55,7 @@ class ProfileScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Icon(Icons.chat_outlined, color: Colors.white),
-                const SizedBox(width: 16),
+
                 const Icon(Icons.notifications_outlined, color: Colors.white),
                 const SizedBox(width: 10),
               ],
@@ -64,17 +65,39 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 16),
 
           // Section: Hoạt động du lịch
-          _sectionTitle("Hoạt động du lịch"),
-          _tile(icon: Icons.reviews, title: "Đánh giá của tôi"),
-          _tile(icon: Icons.help_outline, title: "Câu hỏi cho chỗ nghỉ"),
+          _sectionTitle("Tài Khoản"),
+
+          ListTile(
+            leading: const Icon(Icons.people, color: Colors.black),
+            title: const Text("Thông tin của bạn", style: TextStyle(fontSize: 15)),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+              );
+            },
+          ),
+          const Divider(height: 0),
 
           const SizedBox(height: 16),
 
           // Section: Tài khoản và Ưu đãi
           _sectionTitle("Tài khoản và Ưu đãi"),
           // Bước 4: Thêm dòng ưu đãi
-          _tile(icon: Icons.card_giftcard_outlined, title: "Ưu đãi của bạn"),
-          _tile(icon: Icons.security, title: "Bảo mật & Quyền riêng tư"),
+
+          ListTile(
+            leading: const Icon(Icons.security, color: Colors.black),
+            title: const Text("Đổi mật khẩu", style: TextStyle(fontSize: 15)),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              // Xóa thông báo lỗi cũ trước khi điều hướng
+              Provider.of<AuthProvider>(context, listen: false).clearErrorMessage();
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const ChangePasswordScreen()),
+              );
+            },
+          ),
+          const Divider(height: 0),
 
           // Bước 5: Thêm nút đăng xuất
           Column(

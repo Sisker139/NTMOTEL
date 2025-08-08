@@ -2,7 +2,7 @@
     package="com.example.ntmotel"> <!-- Sửa lại nếu bạn dùng package khác -->
 
     <application
-        android:label="ntmotel"
+        android:label="Ntmotel"
         android:icon="@mipmap/ic_launcher">
 
         <activity
@@ -44,4 +44,6 @@
         </intent>
     </queries>
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 </manifest>
